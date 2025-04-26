@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -33,20 +34,27 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+    
+        // تحديد الدور حسب عدد المستخدمين الحاليين
+        $roleName = User::count() === 0 ? 'admin' : 'service_provider';
+        $role = Role::where('name', $roleName)->first();
+        if (!$role) {
+            return redirect()->back()->withErrors(['role' => 'Role not found']);
+        }
+        // إنشاء المستخدم مع ربطه بالدور المناسب
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $role->id,
         ]);
-
+    
         event(new Registered($user));
-
         Auth::login($user);
-
+    
         return redirect(RouteServiceProvider::HOME);
     }
 }

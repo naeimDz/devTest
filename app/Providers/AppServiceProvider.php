@@ -1,8 +1,9 @@
 <?php
-
+// path: app/Providers/AppServiceProvider.php
 namespace App\Providers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
     }
+    
 }
