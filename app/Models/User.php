@@ -67,5 +67,11 @@ class User extends Authenticatable
     {
         return $this->role->name === $role;
     }
+    public function hasPermission($permission)
+    {
+    $userPermissions = $this->role->permissions->pluck('name')->toArray();
+
+    return in_array($permission, $userPermissions);
+    }
     
 }
