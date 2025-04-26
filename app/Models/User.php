@@ -42,4 +42,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+    public function requestServices()
+    {
+        return $this->hasMany(RequestService::class);
+    }
+    public function isAdmin()
+    {
+        return $this->role->name === 'admin';
+    }
+    public function isUser()
+    {
+        return $this->role->name === 'user';
+    }
+    
 }
