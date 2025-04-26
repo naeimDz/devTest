@@ -35,4 +35,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware([CheckRole::class . ':admin'])->group(function () {
+    Route::get('/users', [AdminController::class, 'users']);
+    Route::get('/services', [ProviderController::class, 'services']);
+    Route::get('/roles', [AdminController::class, 'roles']);
+});
+
+Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
+    Route::get('/services', [ProviderController::class, 'services']);
+    Route::get('/request_service', [ProviderController::class, 'requestService']);
+});
+
+Route::middleware([CheckRole::class . ':user'])->group(function () {
+    Route::get('/request_service', [UserController::class, 'requestService']);
+    Route::get('/services', [UserController::class, 'services']);
+});
+
+
 require __DIR__.'/auth.php';
