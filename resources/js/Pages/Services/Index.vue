@@ -1,4 +1,3 @@
-<!-- resources/js/Pages/Services/Index.vue -->
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
@@ -14,19 +13,29 @@ const props = defineProps({
 const searchQuery = ref(props.filters.search || '');
 const statusFilter = ref(props.filters.status || '');
 const showDeleteModal = ref(false);
+const showCreateModal = ref(false);
 const serviceToDelete = ref(null);
 
-const form = useForm({
+// نموذج إنشاء خدمة جديدة
+const createForm = useForm({
     name: '',
     description: '',
     status: 'active',
 });
 
+// نموذج البحث
+const searchForm = useForm({
+    search: props.filters.search || '',
+    status: props.filters.status || '',
+});
+
+// تأكيد حذف خدمة
 const confirmDeleteService = (service) => {
     serviceToDelete.value = service;
     showDeleteModal.value = true;
 };
 
+// حذف خدمة
 const deleteService = () => {
     router.delete(route('services.destroy', serviceToDelete.value.id), {
         onSuccess: () => {
@@ -36,23 +45,41 @@ const deleteService = () => {
     });
 };
 
+// إنشاء خدمة جديدة
+const createService = () => {
+    createForm.post(route('services.store'), {
+        onSuccess: () => {
+            showCreateModal.value = false;
+            createForm.reset();
+        },
+    });
+};
+
+// البحث عن خدمات
 const search = () => {
-    router.get(
-        route('services.index'),
-        { search: searchQuery.value, status: statusFilter.value },
-        { preserveState: true, preserveScroll: true }
-    );
+    searchForm.get(route('services.admin'), {
+        preserveState: true,
+        preserveScroll: true,
+    });
 };
 
+// إعادة ضبط عوامل البحث
 const resetFilters = () => {
-    searchQuery.value = '';
-    statusFilter.value = '';
-    router.get(route('services.index'));
+    searchForm.search = '';
+    searchForm.status = '';
+    searchForm.get(route('services.admin'));
 };
 
+// التحقق من وجود عوامل بحث نشطة
 const isFiltering = computed(() => {
-    return searchQuery.value || statusFilter.value;
+    return searchForm.search || searchForm.status;
 });
+
+// فتح مودال إنشاء خدمة جديدة
+const openCreateModal = () => {
+    createForm.reset();
+    showCreateModal.value = true;
+};
 </script>
 
 <template>
@@ -60,12 +87,12 @@ const isFiltering = computed(() => {
         <template #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">إدارة الخدمات</h2>
-                <Link
-                    :href="route('services.create')"
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                <button
+                    @click="openCreateModal"
+                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md"
                 >
                     إضافة خدمة جديدة
-                </Link>
+                </button>
             </div>
         </template>
 
@@ -74,12 +101,12 @@ const isFiltering = computed(() => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
 
-                        <!-- Filters -->
+                        <!-- عوامل البحث -->
                         <div class="mb-6 bg-gray-50 p-4 rounded-lg">
                             <div class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4 md:space-x-reverse">
                                 <div class="flex-grow">
                                     <input
-                                        v-model="searchQuery"
+                                        v-model="searchForm.search"
                                         type="text"
                                         placeholder="ابحث عن خدمة..."
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 placeholder-gray-400"
@@ -88,9 +115,8 @@ const isFiltering = computed(() => {
                                 </div>
                                 <div class="w-full md:w-48">
                                     <select
-                                        v-model="statusFilter"
+                                        v-model="searchForm.status"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        @change="search"
                                     >
                                         <option value="">جميع الحالات</option>
                                         <option value="active">مفعلة</option>
@@ -117,7 +143,7 @@ const isFiltering = computed(() => {
                             </div>
                         </div>
 
-                        <!-- Services Grid -->
+                        <!-- قائمة الخدمات -->
                         <div v-if="services.data.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div v-for="service in services.data" :key="service.id" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                                 <div class="p-5">
@@ -160,7 +186,7 @@ const isFiltering = computed(() => {
                             </div>
                         </div>
 
-                        <!-- Empty State -->
+                        <!-- حالة الفراغ -->
                         <div v-else class="text-center py-12">
                             <svg
                                 class="mx-auto h-12 w-12 text-gray-400"
@@ -179,9 +205,9 @@ const isFiltering = computed(() => {
                             <h3 class="mt-2 text-sm font-medium text-gray-900">لا توجد خدمات</h3>
                             <p class="mt-1 text-sm text-gray-500">ابدأ بإضافة خدمة جديدة لعرضها هنا.</p>
                             <div class="mt-6">
-                                <Link
-                                    :href="route('services.create')"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                                <button
+                                    @click="openCreateModal"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
                                 >
                                     <svg
                                         class="-ml-1 mr-2 h-5 w-5"
@@ -197,15 +223,85 @@ const isFiltering = computed(() => {
                                         />
                                     </svg>
                                     إضافة خدمة جديدة
-                                </Link>
+                                </button>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
+        <!-- مودال إنشاء خدمة جديدة -->
+        <Modal :show="showCreateModal" @close="showCreateModal = false">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">إضافة خدمة جديدة</h2>
+                
+                <form @submit.prevent="createService">
+                    <div class="space-y-4">
+                        <!-- اسم الخدمة -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">اسم الخدمة</label>
+                            <input
+                                type="text"
+                                id="name"
+                                v-model="createForm.name"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                required
+                            />
+                            <div v-if="createForm.errors.name" class="text-red-500 text-sm mt-1">{{ createForm.errors.name }}</div>
+                        </div>
+                        
+                        <!-- وصف الخدمة -->
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700">وصف الخدمة</label>
+                            <textarea
+                                id="description"
+                                v-model="createForm.description"
+                                rows="4"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                required
+                            ></textarea>
+                            <div v-if="createForm.errors.description" class="text-red-500 text-sm mt-1">{{ createForm.errors.description }}</div>
+                        </div>
+                        
+                        <!-- حالة الخدمة -->
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">حالة الخدمة</label>
+                            <select
+                                id="status"
+                                v-model="createForm.status"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                            >
+                                <option value="active">مفعلة</option>
+                                <option value="inactive">غير مفعلة</option>
+                            </select>
+                            <div v-if="createForm.errors.status" class="text-red-500 text-sm mt-1">{{ createForm.errors.status }}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- أزرار الإرسال -->
+                    <div class="flex justify-end space-x-3 space-x-reverse mt-6">
+                        <button
+                            type="button"
+                            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+                            @click="showCreateModal = false"
+                        >
+                            إلغاء
+                        </button>
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600  rounded-md"
+                            :disabled="createForm.processing"
+                        >
+                            {{ createForm.processing ? 'جاري الإرسال...' : 'إضافة الخدمة' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+        <!-- مودال تأكيد الحذف -->
         <Modal :show="showDeleteModal" @close="showDeleteModal = false">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-4">تأكيد الحذف</h2>
@@ -215,14 +311,14 @@ const isFiltering = computed(() => {
                 <div class="flex justify-end space-x-3 space-x-reverse">
                     <button
                         type="button"
-                        class="inline-flex justify-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50"
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
                         @click="showDeleteModal = false"
                     >
                         إلغاء
                     </button>
                     <button
                         type="button"
-                        class="inline-flex justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-medium text-white hover:bg-red-700"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
                         @click="deleteService"
                     >
                         حذف

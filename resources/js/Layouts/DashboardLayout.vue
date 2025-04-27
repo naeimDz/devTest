@@ -33,8 +33,8 @@ const user = page.props.auth.user;
                                     لوحة التحكم
                                 </NavLink>
                                 
-                                <template v-if="user.role === 'provider' || user.role === 'admin'">
-                                    <NavLink :href="route('services.index')" :active="route().current('services.index')">
+                                <template v-if="user.role === 'service_provider' || user.role === 'admin'">
+                                    <NavLink :href="route('services.admin')" :active="route().current('services.admin')">
                                         الخدمات
                                     </NavLink>
                                     <NavLink :href="route('requests.index')" :active="route().current('requests.index')">
@@ -132,7 +132,7 @@ const user = page.props.auth.user;
                         </ResponsiveNavLink>
                         
                         <template v-if="user.role === 'provider' || user.role === 'admin'">
-                            <ResponsiveNavLink :href="route('services.index')" :active="route().current('services.index')">
+                            <ResponsiveNavLink :href="route('services.admin')" :active="route().current('services.admin')">
                                 الخدمات
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('requests.index')" :active="route().current('requests.index')">
