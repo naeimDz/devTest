@@ -126,7 +126,7 @@ const openCreateModal = () => {
                                 <div class="flex items-center space-x-2 space-x-reverse">
                                     <button
                                         type="button"
-                                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md"
                                         @click="search"
                                     >
                                         بحث
@@ -170,13 +170,13 @@ const openCreateModal = () => {
                                         <div class="flex space-x-2 space-x-reverse">
                                             <Link
                                                 :href="route('services.edit', service.id)"
-                                                class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded"
+                                                class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-sm rounded"
                                             >
                                                 تعديل
                                             </Link>
                                             <button
                                                 @click="confirmDeleteService(service)"
-                                                class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded"
+                                                class="px-3 py-1 bg-red-500 hover:bg-red-600 text-sm rounded"
                                             >
                                                 حذف
                                             </button>
@@ -207,7 +207,7 @@ const openCreateModal = () => {
                             <div class="mt-6">
                                 <button
                                     @click="openCreateModal"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-600 hover:bg-blue-700"
                                 >
                                     <svg
                                         class="-ml-1 mr-2 h-5 w-5"
@@ -318,7 +318,7 @@ const openCreateModal = () => {
                     </button>
                     <button
                         type="button"
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-md"
                         @click="deleteService"
                     >
                         حذف

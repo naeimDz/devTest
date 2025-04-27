@@ -78,6 +78,7 @@
   import { ref, computed } from "vue";
   import { usePage } from "@inertiajs/vue3";
   import ServiceCard from "../../Components/ServiceCard.vue";
+  import RequestServiceModal from "../../Components/RequestServiceModal.vue";
   
   const page = usePage();
   const services = ref(page.props.services);
