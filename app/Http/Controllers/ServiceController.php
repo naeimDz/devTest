@@ -63,6 +63,7 @@ class ServiceController extends Controller
 
     public function create()
     {
+        //
         return inertia('Services/Create');
     }
 
@@ -71,12 +72,18 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric'
-        ]);
+            'status' => 'required|in:active,inactive',
+            ]);
 
-        Service::create($validated);
-
-        return redirect()->route('services.admin');
+            $service = new Service();
+            $service->name = $validated['name'];
+            $service->description = $validated['description'];
+            $service->status = $validated['status'];
+            $service->user_id = Auth::id();
+            $service->save();
+            
+            return redirect()->route('services.admin')
+                ->with('success', 'تم إضافة الخدمة بنجاح');
     }
 
     public function edit($id)
