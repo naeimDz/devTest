@@ -127,7 +127,7 @@ watch(() => props.show, (newValue) => {
 });
 
 function submitAuthenticatedRequest() {
-  form.post(route('services.request.authenticated', props.service.id), {
+  form.post(route('request.explore', props.service.id), {
     onSuccess: () => {
       emit('close');
       form.reset();
@@ -136,7 +136,7 @@ function submitAuthenticatedRequest() {
 }
 
 function submitGuestRequest() {
-  form.post(route('services.request.guest', props.service.id), {
+  form.post(route('services.explore', props.service.id), {
     onSuccess: () => {
       emit('close');
       form.reset();

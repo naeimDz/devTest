@@ -63,7 +63,9 @@
           </div>
         </div>
       </div>
-  
+      <div v-if="message" class="alert alert-success">
+      {{ message }}
+    </div>
       <!-- Request Service Modal -->
       <request-service-modal
         v-if="selectedService"

@@ -46,9 +46,8 @@ class RequestServiceController extends Controller
         $requestService->user_id = $userId;
         $requestService->save();
 
-        return Inertia::render('Services/Explore', [
-            'message' => 'تم إنشاء طلب الخدمة بنجاح',
-        ]);
+        return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
+
     }
     public function storeForAuthenticatedUser(Request $request,$serviceId)
     {    
@@ -61,9 +60,7 @@ class RequestServiceController extends Controller
             'email' => $user->email,
         ]);
     
-        return Inertia::render('Services/Explore', [
-            'message' => 'تم إنشاء طلب الخدمة بنجاح',
-        ]);
+        return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
     }
     
     

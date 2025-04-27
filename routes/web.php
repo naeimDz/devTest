@@ -26,8 +26,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
-Route::post('/services/{id}/request/guest', [RequestServiceController::class, 'storeForGuest'])->name('services.request.guest');
+Route::post('/services/{serviceId}', [RequestServiceController::class, 'storeForGuest'])->name('services.explore');;
 Route::get('/services/explore', [ServiceController::class, 'indexPublic'])->name('services.indexPublic');
 
 Route::get('/dashboard', function () {
@@ -44,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
-    Route::post('/services/{service}/request/authenticated', [RequestServiceController::class, 'storeForAuthenticatedUser'])->middleware('auth')->name('services.request.authenticated');
+    Route::post('/service/{serviceId}/request', [RequestServiceController::class, 'storeForAuthenticatedUser'])->middleware('auth')->name('request.explore');
 });
 
 Route::middleware([CheckRole::class . ':admin'])->group(function () {
