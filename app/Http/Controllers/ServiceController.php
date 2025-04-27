@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -19,11 +20,39 @@ class ServiceController extends Controller
             'services' => $services
         ]);
     }
-    public function indexAdmin()
+
+    public function indexAdmin(Request $request)
     {
-        $services = Service::all();
-        return inertia('Services/AdminIndex', ['services' => $services]); 
+        $user = Auth::user();
+        $query = Service::query();
+        
+        if ($user->role === 'service_provider') {
+            $query->where('user_id', $user->id);
+        }
+        
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+        
+        $services = $query->orderBy('created_at', 'desc')
+                          ->paginate(9)
+                          ->withQueryString();
+        
+        return Inertia::render('Services/Index', [
+            'services' => $services,
+            'filters' => $request->only(['search', 'status']),
+            'success' => session('success'),
+        ]);
     }
+
 
     public function show($id)
     {
@@ -47,7 +76,7 @@ class ServiceController extends Controller
 
         Service::create($validated);
 
-        return redirect()->route('services.index');
+        return redirect()->route('services.admin');
     }
 
     public function edit($id)
@@ -69,7 +98,7 @@ class ServiceController extends Controller
 
         $service->update($validated);
 
-        return redirect()->route('services.index');
+        return redirect()->route('services.admin');
     }
 
     public function destroy($id)
@@ -77,6 +106,6 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
         $service->delete();
 
-        return redirect()->route('services.index');
+        return redirect()->route('services.admin');
     }
 }
