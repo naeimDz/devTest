@@ -26,7 +26,7 @@ class ServiceController extends Controller
         $user = Auth::user();
         $query = Service::query();
         
-        if ($user->role === 'service_provider') {
+        if ($user->role->name !== 'admin') {
             $query->where('user_id', $user->id);
         }
         
