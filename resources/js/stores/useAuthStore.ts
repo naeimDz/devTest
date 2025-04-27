@@ -1,4 +1,3 @@
-// resources/js/Stores/useAuthStore.ts
 import { defineStore } from 'pinia'
 import type { User } from '@/types'
 

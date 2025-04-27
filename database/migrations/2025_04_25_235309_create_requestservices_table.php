@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('requestservices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable(true)->constrained('users')->onDelete('cascade');
             $table->string('status')->default('pending');
-            $table->string('email')->nullable();
+            $table->string('email')->nullable(false);
             $table->timestamps();
         });
     }

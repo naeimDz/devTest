@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\RequestServiceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,7 +27,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::post('/services/{id}/request/guest', [RequestServiceController::class, 'storeForGuest'])->name('services.request.guest');
 Route::get('/services/explore', [ServiceController::class, 'indexPublic'])->name('services.indexPublic');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -40,7 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
-    Route::delete('/admin/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::post('/services/{service}/request/authenticated', [RequestServiceController::class, 'storeForAuthenticatedUser'])->middleware('auth')->name('services.request.authenticated');
 });
 
 Route::middleware([CheckRole::class . ':admin'])->group(function () {
