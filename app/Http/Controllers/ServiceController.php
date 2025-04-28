@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Service;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Events\ServiceCreated;
 
 class ServiceController extends Controller
 {
@@ -81,6 +82,7 @@ class ServiceController extends Controller
             $service->status = $validated['status'];
             $service->user_id = Auth::id();
             $service->save();
+            even(new ServiceCreated($service->id));
             
             return redirect()->route('services.admin')
                 ->with('success', 'تم إضافة الخدمة بنجاح');

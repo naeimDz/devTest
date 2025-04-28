@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Role;
+use App\Events\UserRoleUpdated;
 
 class UserController extends Controller
 {
@@ -42,6 +43,7 @@ class UserController extends Controller
     
     $user->role_id = $validated['role_id'];
     $user->save();
+    even(new UserRoleUpdated($user->id, $validated['role_id']));
     
     return back()->with('message', 'تم تحديث دور المستخدم بنجاح');
     }

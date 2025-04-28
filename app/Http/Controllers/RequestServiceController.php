@@ -7,6 +7,8 @@ use App\Models\RequestService;
 use App\Models\Service;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Events\ServiceRequested;
+
 
 class RequestServiceController extends Controller
 {
@@ -69,7 +71,6 @@ class RequestServiceController extends Controller
         $requestService->service_id = $serviceId;
         $requestService->user_id = $userId;
         $requestService->save();
-
         return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
 
     }
@@ -83,7 +84,7 @@ class RequestServiceController extends Controller
             'status' => 'confirmed',
             'email' => $user->email,
         ]);
-    
+        event(new ServiceRequested($requestService->service_id, $user->id));
         return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
     }
 
@@ -99,7 +100,7 @@ class RequestServiceController extends Controller
         ]);
         
         // Notification::send($requestService->email, new ServiceRequestStatusUpdated($requestService));
-        
+        even(new RequestServiceStatusUpdated($requestService->id, $validated['status']));
         return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح');
     }
 
