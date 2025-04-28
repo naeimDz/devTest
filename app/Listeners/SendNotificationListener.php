@@ -36,7 +36,7 @@ class SendNotificationListener implements ShouldQueue
     public function handle(UserRoleUpdated $event)
     {
         $user = User::find($event->userId);
-        $user->notify(new UserRoleUpdatedNotification($event->newRole));
+        $user->notify(new UserRoleUpdatedNotification($event->newRole,$event->userId));
     }
 
     public function handleServiceCreated(ServiceCreated $event)

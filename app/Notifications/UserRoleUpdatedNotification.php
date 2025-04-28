@@ -11,10 +11,10 @@ class UserRoleUpdatedNotification extends Notification
 {
     use Queueable;
 
-    public string $userName;
+    public int $userName;
     public int $newRole;
 
-    public function __construct(string $userName, int $newRole)
+    public function __construct(int $userName, int $newRole)
     {
         $this->userName = $userName;
         $this->newRole = $newRole;

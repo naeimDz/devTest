@@ -8,6 +8,10 @@ use App\Events\ServiceRequested;
 use App\Events\RequestStatusUpdated;
 use App\Events\UserRoleUpdated;
 use App\Events\ServiceCreated;
+use App\Notifications\ServiceRequestedNotification;
+use App\Notifications\RequestStatusUpdatedNotification;
+use App\Notifications\UserRoleUpdatedNotification;
+use App\Notifications\ServiceCreatedNotification;
 use App\Listeners\SendNotificationListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
@@ -31,7 +35,7 @@ class EventServiceProvider extends ServiceProvider
 
         ],
         UserRoleUpdated::class => [
-            SendNotificationListener::class,'handleUserRoleUpdated',
+            SendNotificationListener::class,
         ],
         ServiceCreated::class => [
             SendNotificationListener::class,'handleServiceCreated',
