@@ -15,8 +15,12 @@ class RequestServiceController extends Controller
         $user = Auth::user();
         $query = RequestService::query();
 
-        if ($user->role->name !== 'admin') {
+        if ($user->role->name === 'user') {
             $query->where('user_id', $user->id);
+        } elseif ($user->role->name === 'service_provider') {
+            $query->whereHas('service', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
         }
         
         $requestServices = $query->orderBy('created_at', 'desc')

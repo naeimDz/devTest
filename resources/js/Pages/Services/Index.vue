@@ -169,7 +169,7 @@ const openCreateModal = () => {
                                         
                                         <div class="flex space-x-2 space-x-reverse">
                                             <Link
-                                                :href="route('services.edit', service.id)"
+                                                :href="route('services.update', service.id)"
                                                 class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-sm rounded"
                                             >
                                                 تعديل
