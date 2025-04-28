@@ -46,7 +46,7 @@ Route::middleware([ 'auth', 'verified'])->group(function () {
 });
 
 Route::get('/test-notification', function () {
-    $user = \App\Models\User::find(1);
+    $user = \App\Models\User::find(22);
     $user->notify(new \App\Notifications\goNotification());
 
     return "Notification sent!";

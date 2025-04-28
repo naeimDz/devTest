@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $notifications = $request->user()
             ->notifications()
             ->orderBy('created_at', 'desc')
@@ -24,6 +26,7 @@ class NotificationController extends Controller
 
         return Inertia::render('Notifications/Index', [
             'notifications' => $notifications,
+            'unread_count' => $user->unreadNotifications->count(),
         ]);
     }
 }
