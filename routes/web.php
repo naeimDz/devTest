@@ -6,6 +6,7 @@ use App\Http\Controllers\RequestServiceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Middleware\CheckRole;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
+    Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
     Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
@@ -53,6 +56,8 @@ Route::middleware([CheckRole::class . ':admin'])->group(function () {
 
 Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
     Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
+    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
+
 });
 
 Route::middleware([CheckRole::class . ':user'])->group(function () {

@@ -117,12 +117,12 @@ onMounted(() => {
   }
 });
 
-// Reset form when modal is closed
+
 watch(() => props.show, (newValue) => {
   if (!newValue) {
     form.reset();
     form.clearErrors();
-    props.show = false;
+
   }
 });
 

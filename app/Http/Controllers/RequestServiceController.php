@@ -18,9 +18,29 @@ class RequestServiceController extends Controller
         if ($user->role->name !== 'admin') {
             $query->where('user_id', $user->id);
         }
-        $requestServices = $query->orderBy('created_at', 'desc');
+        
+        $requestServices = $query->orderBy('created_at', 'desc')
+        ->with(['service', 'user'])
+        ->get()
+        ->map(function ($request) {
+            return [
+                'id' => $request->id,
+                'email' => $request->email,
+                'status' => $request->status,
+                'created_at' => $request->created_at,
+                'service' => $request->service ? [
+                    'id' => $request->service->id,
+                    'name' => $request->service->name,
+                ] : null,
+                'user' => $request->user ? [
+                    'id' => $request->user->id,
+                    'name' => $request->user->name,
+                ] : null,
+            ];
+        });
 
-        return Inertia::render('RequestService/Index', [
+
+        return Inertia::render('Requests/Index', [
             'requestServices' => $requestServices,
         ]);
     }
@@ -62,6 +82,22 @@ class RequestServiceController extends Controller
     
         return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
     }
-    
+
+    public function update(Request $request, RequestService $requestService)
+    {
+        
+        $validated = $request->validate([
+            'status' => 'required|in:pending,accepted,processing,completed,cancelled',
+        ]);
+        
+        $requestService->update([
+            'status' => $validated['status']
+        ]);
+        
+        // Notification::send($requestService->email, new ServiceRequestStatusUpdated($requestService));
+        
+        return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح');
+    }
+
     
 }
