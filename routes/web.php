@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Middleware\CheckRole;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,11 +51,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware([CheckRole::class . ':admin'])->group(function () {
-    Route::get('/users', [AdminController::class, 'users']);
-    Route::get('/roles', [AdminController::class, 'roles']);
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::put('/users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::put('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
 });
 
 Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
+
     Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
     Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
 
