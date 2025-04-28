@@ -54,6 +54,8 @@ Route::get('/test-notification', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+
 });
 
 
