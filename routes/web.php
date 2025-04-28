@@ -31,7 +31,9 @@ Route::get('/', function () {
 Route::post('/services/{serviceId}', [RequestServiceController::class, 'storeForGuest'])->name('services.explore');
 Route::get('/services/explore', [ServiceController::class, 'indexPublic'])->name('services.indexPublic');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::get('Errors/Blocked', function () {return Inertia::render('Blocked');})->name('blocked');
+
+Route::middleware([ 'auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
