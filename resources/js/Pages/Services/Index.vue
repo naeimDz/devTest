@@ -101,48 +101,6 @@ const openCreateModal = () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
 
-                        <!-- عوامل البحث -->
-                        <div class="mb-6 bg-gray-50 p-4 rounded-lg">
-                            <div class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4 md:space-x-reverse">
-                                <div class="flex-grow">
-                                    <input
-                                        v-model="searchForm.search"
-                                        type="text"
-                                        placeholder="ابحث عن خدمة..."
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 placeholder-gray-400"
-                                        @keyup.enter="search"
-                                    />
-                                </div>
-                                <div class="w-full md:w-48">
-                                    <select
-                                        v-model="searchForm.status"
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    >
-                                        <option value="">جميع الحالات</option>
-                                        <option value="active">مفعلة</option>
-                                        <option value="inactive">غير مفعلة</option>
-                                    </select>
-                                </div>
-                                <div class="flex items-center space-x-2 space-x-reverse">
-                                    <button
-                                        type="button"
-                                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md"
-                                        @click="search"
-                                    >
-                                        بحث
-                                    </button>
-                                    <button
-                                        v-if="isFiltering"
-                                        type="button"
-                                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
-                                        @click="resetFilters"
-                                    >
-                                        إعادة ضبط
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- قائمة الخدمات -->
                         <div v-if="services.data.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div v-for="service in services.data" :key="service.id" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">

@@ -93,27 +93,7 @@ const formatDate = (dateString) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <!-- Filters -->
-                        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <h3 class="text-lg font-medium text-gray-700 mb-4 sm:mb-0">قائمة طلبات الخدمات</h3>
-                            
-                            <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 rtl:space-x-reverse">
-                                <select
-                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
-                                >
-                                    <option value="">جميع الحالات</option>
-                                    <option v-for="option in statusOptions" :key="option.value" :value="option.value">
-                                        {{ option.label }}
-                                    </option>
-                                </select>
-                                
-                                <input 
-                                    type="text" 
-                                    placeholder="بحث..." 
-                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
-                                />
-                            </div>
-                        </div>
+
 
                         <!-- Requests Table -->
                         <div class="overflow-x-auto flex justify-center">

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
+use App\Notifications\goNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,12 @@ Route::middleware([ 'auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/test-notification', function () {
+    $user = \App\Models\User::find(1);
+    $user->notify(new \App\Notifications\goNotification());
 
+    return "Notification sent!";
+});
 Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
