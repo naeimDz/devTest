@@ -24,16 +24,18 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         ServiceRequested::class => [
-            SendNotificationListener::class,
+            SendNotificationListener::class,'handleServiceRequested',
         ],
         RequestStatusUpdated::class => [
-            SendNotificationListener::class,
+            SendNotificationListener::class,'handleRequestStatusUpdated',
+
         ],
         UserRoleUpdated::class => [
-            SendNotificationListener::class,
+            SendNotificationListener::class,'handleUserRoleUpdated',
         ],
         ServiceCreated::class => [
-            SendNotificationListener::class,
+            SendNotificationListener::class,'handleServiceCreated',
+
         ],
     ];
 

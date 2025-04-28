@@ -14,10 +14,10 @@ class UserRoleUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public string $newRole;
+    public int $newRole;
     public int $userId;
 
-    public function __construct(string $newRole, int $userId)
+    public function __construct(int $newRole, int $userId)
     {
         $this->newRole = $newRole;
         $this->userId = $userId;
