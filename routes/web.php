@@ -28,26 +28,32 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-Route::post('/services/{serviceId}', [RequestServiceController::class, 'storeForGuest'])->name('services.explore');;
+Route::post('/services/{serviceId}', [RequestServiceController::class, 'storeForGuest'])->name('services.explore');
 Route::get('/services/explore', [ServiceController::class, 'indexPublic'])->name('services.indexPublic');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
+});
+
+
+Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
-    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
-    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
-    Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
-    Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
+    Route::put('/services/{id}', [ServiceController::class, 'updateStatus'])->name('services.update-status');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
-    Route::post('/service/{serviceId}/request', [RequestServiceController::class, 'storeForAuthenticatedUser'])->middleware('auth')->name('request.explore');
 });
 
 Route::middleware([CheckRole::class . ':admin'])->group(function () {
@@ -56,14 +62,18 @@ Route::middleware([CheckRole::class . ':admin'])->group(function () {
     Route::put('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
 });
 
-Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
 
+Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
     Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
-    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
+    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+    Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+
 
 });
 
 Route::middleware([CheckRole::class . ':user'])->group(function () {
+    Route::post('/service/{serviceId}/request', [RequestServiceController::class, 'storeForAuthenticatedUser'])->name('request.explore');
     //
 });
 
