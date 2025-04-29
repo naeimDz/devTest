@@ -8,6 +8,7 @@ use App\Events\ServiceRequested;
 use App\Events\RequestStatusUpdated;
 use App\Events\UserRoleUpdated;
 use App\Events\ServiceCreated;
+use App\Listeners\NotifyAdminsAboutServiceCreated;
 use App\Notifications\ServiceRequestedNotification;
 use App\Notifications\RequestStatusUpdatedNotification;
 use App\Notifications\UserRoleUpdatedNotification;
@@ -38,8 +39,7 @@ class EventServiceProvider extends ServiceProvider
             SendNotificationListener::class,
         ],
         ServiceCreated::class => [
-            SendNotificationListener::class,'handleServiceCreated',
-
+            NotifyAdminsAboutServiceCreated::class,
         ],
     ];
 

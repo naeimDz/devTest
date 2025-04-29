@@ -82,8 +82,10 @@ class ServiceController extends Controller
             $service->status = $validated['status'];
             $service->user_id = Auth::id();
             $service->save();
-            even(new ServiceCreated($service->id));
-            
+
+
+            event(new ServiceCreated($service));
+                        
             return redirect()->route('services.admin')
                 ->with('success', 'تم إضافة الخدمة بنجاح');
     }
@@ -102,7 +104,6 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric'
         ]);
 
         $service->update($validated);

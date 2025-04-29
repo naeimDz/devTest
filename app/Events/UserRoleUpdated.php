@@ -38,7 +38,10 @@ class UserRoleUpdated
     public function broadcastWith()
     {
         return [
+            'user_id' => $this->userId,
+            'new_role' => $this->newRole,
             'notification' => 'Your role has been updated to ' . $this->newRole, 
         ];
     }
+    
 }

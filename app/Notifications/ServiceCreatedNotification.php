@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use App\Models\Service;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
@@ -11,12 +12,13 @@ class ServiceCreatedNotification extends Notification
 {
     use Queueable;
 
-    public string $serviceName;
+    public $service;
 
-    public function __construct(string $serviceName)
+    public function __construct(Service $service)
     {
-        $this->serviceName = $serviceName;
+        $this->service = $service;
     }
+
 
     public function via($notifiable)
     {
@@ -26,16 +28,18 @@ class ServiceCreatedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "A new service named {$this->serviceName} has been created.",
-            'service_name' => $this->serviceName,
+            'service_id' => $this->service->id,
+            'service_name' => $this->service->name,
+            'message' => "تم إضافة خدمة جديدة: " . $this->service->name,
         ];
     }
 
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => "A new service named {$this->serviceName} has been created.",
-            'service_name' => $this->serviceName,
+            'service_id' => $this->service->id,
+            'service_name' => $this->service->name,
+            'message' => "تم إضافة خدمة جديدة: " . $this->service->name,
         ]);
     }
 }

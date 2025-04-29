@@ -3,23 +3,24 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
+
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Service;
 
 class ServiceCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public int $serviceId;
-    public int $userId;
-    public function __construct()
+    public $service;
+
+    public function __construct(Service $service)
     {
-        $this->serviceId = $serviceId;
-        $this->userId = $userId;
+        $this->service = $service;
     }
 
     /**
@@ -30,7 +31,16 @@ class ServiceCreated
     public function broadcastOn(): array
     {
         return [
-            new Channel('notifications'),
+            new PrivateChannel('App.Models.User.' . $this->userId),
+        ];
+    }
+    public function broadcastWith(): array
+    {
+        return [
+            'service_id' => $this->serviceId,
+            'user_id' => $this->userId,
+            'created_at' => now()->toDateTimeString(),
+            'service' => $this->service,
         ];
     }
 }

@@ -17,6 +17,7 @@ use Illuminate\Queue\InteractsWithQueue;
 
 
 
+
 class SendNotificationListener implements ShouldQueue
 {
     use InteractsWithQueue;
@@ -35,15 +36,12 @@ class SendNotificationListener implements ShouldQueue
 
     public function handle(UserRoleUpdated $event)
     {
+
         $user = User::find($event->userId);
-        $user->notify(new UserRoleUpdatedNotification($event->userId,$event->newRole));
+        $user->notify(new UserRoleUpdatedNotification( $event->userId,$event->newRole));
+
+
     }
 
-    public function handleServiceCreated(ServiceCreated $event)
-    {
-        $admins = User->Role::where('role_id', '1')->get();
-        foreach ($admins as $admin) {
-            $admin->notify(new ServiceCreatedNotification($event->serviceId));
-        }
-    }
+
 }

@@ -72,7 +72,6 @@ Route::get('/notifications-test', function () {
 
 Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
-    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
     Route::put('/services/{id}', [ServiceController::class, 'updateStatus'])->name('services.update-status');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
@@ -85,6 +84,7 @@ Route::middleware([CheckRole::class . ':admin'])->group(function () {
 
 
 Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
+    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
     Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');

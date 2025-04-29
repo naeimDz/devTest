@@ -99,8 +99,8 @@ class RequestServiceController extends Controller
             'status' => $validated['status']
         ]);
         
-        // Notification::send($requestService->email, new ServiceRequestStatusUpdated($requestService));
-        even(new RequestServiceStatusUpdated($requestService->id, $validated['status']));
+        //Notification::send($requestService->user, new RequestStatusUpdatedNotification($requestService));
+        //event(new RequestStatusUpdatedNotification($requestService->id, $validated['status']));
         return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح');
     }
 

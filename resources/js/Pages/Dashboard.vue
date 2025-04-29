@@ -8,7 +8,6 @@ import { useNotificationsStore } from '@/stores/useNotifications';
 const auth = useAuthStore();
 const user = auth.user;
 const permissions = ref([]);
-const loading = ref(true);
 const notificationsStore = useNotificationsStore();
 
 const notifications = computed(() => notificationsStore.getNotifications);
@@ -87,22 +86,22 @@ const hasRole = (roleName) => {
               <p v-else class="text-gray-600 mt-2">👤 مستخدم عادي</p>
             </div>
             
-            <!-- Quick Actions -->
+            <!-- Quick Actions 
             <div class="border-t pt-4 mt-4" v-if="hasRole('admin') || hasRole('service_provider')">
               <h2 class="text-lg font-medium mb-3">⚡ الإجراءات السريعة:</h2>
               
               <div class="flex flex-wrap gap-3">
-                <button v-if="hasPermission('create services')"
+                <button @click="showCreateModal = true" v-if="hasPermission('create services')"
                         class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center">
                   <span class="ml-2">➕</span>
                   <span>إنشاء خدمة جديدة</span>
                 </button>
-                
+
                 <button class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg flex items-center">
                   <span class="ml-2">📋</span>
                   <span>عرض الطلبات الجديدة</span>
                 </button>
-                
+
                 <button v-if="hasRole('admin')" 
                         class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg flex items-center">
                   <span class="ml-2">👥</span>
@@ -110,7 +109,7 @@ const hasRole = (roleName) => {
                 </button>
               </div>
             </div>
-            
+            -->
             <!-- Notifications section -->
             <div class="border-t pt-4 mt-4">
               <h2 class="text-lg font-medium mb-2">🔔 الإشعارات:</h2>
@@ -130,5 +129,6 @@ const hasRole = (roleName) => {
         </div>
       </div>
     </div>
+    
   </AuthenticatedLayout>
 </template>
