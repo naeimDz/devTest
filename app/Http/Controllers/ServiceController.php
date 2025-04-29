@@ -7,6 +7,7 @@ use App\Models\Service;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Events\ServiceCreated;
+use App\Notifications\ServiceUpdateWarningNotification;
 
 class ServiceController extends Controller
 {
@@ -97,19 +98,29 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Service $service)
     {
-        $service = Service::findOrFail($id);
-        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'status' => 'required|in:active,inactive',
         ]);
+    
+        $service->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'status' => $validated['status'],
+        ]);
+        $service->fill($validated);
+        $service->save();
 
-        $service->update($validated);
-
-        return redirect()->route('services.admin');
+        if ($request->boolean('warning')) {
+            $service->user->notify(new ServiceUpdateWarningNotification($service));
+       }
+    
+        return redirect()->route('services.admin')->with('success', 'تم تحديث الخدمة بنجاح');
     }
+    
 
     public function destroy($id)
     {

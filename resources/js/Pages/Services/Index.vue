@@ -25,20 +25,16 @@ const hasRole = (roleName) => {
   return user?.role?.name?.toLowerCase() === roleName.toLowerCase();
 };
 
-// التحقق إذا كان المستخدم أدمن
 const isAdmin = computed(() => hasRole('admin'));
 
-// التحقق إذا كان المستخدم مزود خدمة
 const isServiceProvider = computed(() => hasRole('service_provider'));
 
-// نموذج إنشاء خدمة جديدة
 const createForm = useForm({
     name: '',
     description: '',
     status: 'active',
 });
 
-// نموذج تعديل خدمة
 const editForm = useForm({
     name: '',
     description: '',
@@ -62,7 +58,7 @@ const deleteService = () => {
     });
 };
 
-// إنشاء خدمة جديدة
+
 const createService = () => {
     createForm.post(route('services.store'), {
         onSuccess: () => {
@@ -72,7 +68,7 @@ const createService = () => {
     });
 };
 
-// فتح مودال تعديل الخدمة
+// تعديل الخدمة
 const openEditModal = (service) => {
     serviceToEdit.value = service;
     editForm.name = service.name;
@@ -92,7 +88,7 @@ const updateService = () => {
     });
 };
 
-// فتح مودال إنشاء خدمة جديدة
+// إنشاء خدمة جديدة
 const openCreateModal = () => {
     createForm.reset();
     showCreateModal.value = true;
@@ -242,7 +238,7 @@ const statusText = (service) => {
             </div>
         </div>
 
-        <!-- مودال إنشاء خدمة جديدة -->
+        <!--إنشاء خدمة جديدة -->
         <Modal :show="showCreateModal" @close="showCreateModal = false">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-4">إضافة خدمة جديدة</h2>
@@ -290,7 +286,7 @@ const statusText = (service) => {
                         </div>
                     </div>
                     
-                    <!-- أزرار الإرسال -->
+                    <!--  الإرسال -->
                     <div class="flex justify-end space-x-3 space-x-reverse mt-6">
                         <button
                             type="button"
@@ -311,15 +307,15 @@ const statusText = (service) => {
             </div>
         </Modal>
 
-        <!-- مودال تعديل الخدمة -->
+        <!--تعديل الخدمة -->
         <Modal :show="showEditModal" @close="showEditModal = false">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-4">تعديل الخدمة</h2>
                 
                 <form @submit.prevent="updateService">
-                    <div class="space-y-4">
+                    <div   class="space-y-4">
                         <!-- اسم الخدمة -->
-                        <div>
+                        <div v-if="isServiceProvider">
                             <label for="edit_name" class="block text-sm font-medium text-gray-700">اسم الخدمة</label>
                             <input
                                 type="text"
@@ -332,7 +328,7 @@ const statusText = (service) => {
                         </div>
                         
                         <!-- وصف الخدمة -->
-                        <div>
+                        <div v-if="isServiceProvider">
                             <label for="edit_description" class="block text-sm font-medium text-gray-700">وصف الخدمة</label>
                             <textarea
                                 id="edit_description"
@@ -344,19 +340,6 @@ const statusText = (service) => {
                             <div v-if="editForm.errors.description" class="text-red-500 text-sm mt-1">{{ editForm.errors.description }}</div>
                         </div>
                         
-                        <!-- حالة الخدمة - للمزود فقط -->
-                        <div v-if="isServiceProvider">
-                            <label for="edit_status" class="block text-sm font-medium text-gray-700">حالة الخدمة</label>
-                            <select
-                                id="edit_status"
-                                v-model="editForm.status"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                            >
-                                <option value="active">مفعلة</option>
-                                <option value="inactive">غير مفعلة</option>
-                            </select>
-                            <div v-if="editForm.errors.status" class="text-red-500 text-sm mt-1">{{ editForm.errors.status }}</div>
-                        </div>
                         
                         <!-- حالة الإنذار - للأدمن فقط -->
                         <div v-if="isAdmin">
@@ -377,7 +360,7 @@ const statusText = (service) => {
                         </div>
                         
                         <!-- حالة الخدمة - للأدمن فقط لتغيير حالة التفعيل -->
-                        <div v-if="isAdmin">
+                        <div>
                             <label for="admin_edit_status" class="block text-sm font-medium text-gray-700">حالة الخدمة</label>
                             <select
                                 id="admin_edit_status"
@@ -391,7 +374,7 @@ const statusText = (service) => {
                         </div>
                     </div>
                     
-                    <!-- أزرار الإرسال -->
+                    <!--  الإرسال -->
                     <div class="flex justify-end space-x-3 space-x-reverse mt-6">
                         <button
                             type="button"
@@ -412,7 +395,7 @@ const statusText = (service) => {
             </div>
         </Modal>
 
-        <!-- مودال تأكيد الحذف -->
+        <!--تأكيد الحذف -->
         <Modal :show="showDeleteModal" @close="showDeleteModal = false">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-4">تأكيد الحذف</h2>

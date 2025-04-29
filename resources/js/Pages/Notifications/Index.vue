@@ -25,7 +25,7 @@ defineProps({
         :key="notification.id"
         class="mb-4 p-4 border rounded-lg shadow-sm"
         :class="notification.read_at ? 'bg-gray-100' : 'bg-white'"
-      >{{ notification }}
+      >{{ notification.data }}
         <h2 class="text-lg font-semibold">{{ notification.title }}</h2>
         <p class="text-gray-700">{{ notification.body }}</p>
         <small class="text-gray-500">{{ notification.created_at }}</small>

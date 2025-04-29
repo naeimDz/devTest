@@ -72,7 +72,7 @@ Route::get('/notifications-test', function () {
 
 Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
-    Route::put('/services/{id}', [ServiceController::class, 'updateStatus'])->name('services.update-status');
+    Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
 
@@ -87,14 +87,14 @@ Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
     Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
     Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
-    Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+
     Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
 
 
 });
 
 Route::middleware([CheckRole::class . ':user'])->group(function () {
-    Route::post('/service/{serviceId}/request', [RequestServiceController::class, 'storeForAuthenticatedUser'])->name('request.explore');
+    Route::post('/service/{serviceId}', [RequestServiceController::class, 'storeForAuthenticatedUser'])->name('request.explore');
     //
 });
 

@@ -74,7 +74,7 @@ class RequestServiceController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
 
     }
-    public function storeForAuthenticatedUser(Request $request,$serviceId)
+    public function storeForAuthenticatedUser($serviceId)
     {    
         $user = auth()->user();
     
@@ -84,7 +84,7 @@ class RequestServiceController extends Controller
             'status' => 'confirmed',
             'email' => $user->email,
         ]);
-        event(new ServiceRequested($requestService->service_id, $user->id));
+       // event(new ServiceRequested($requestService->service_id, $user->id));
         return redirect()->back()->with('success', 'تم إنشاء طلب الخدمة بنجاح');
     }
 

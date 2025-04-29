@@ -17,6 +17,7 @@ class NotificationController extends Controller
             ->map(function($notification) {
                 return [
                     'id' => $notification->id,
+                    "data" => $notification->data,
                     'title' => $notification->data['title'] ?? '',
                     'body' => $notification->data['body'] ?? '',
                     'read_at' => $notification->read_at,
