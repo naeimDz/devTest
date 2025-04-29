@@ -25,11 +25,26 @@
         <p v-else class="text-gray-600 mt-2">👤 مستخدم عادي</p>
       </div>
     </div>
+    <div>
+      <h2 class="text-xl font-semibold mb-2">🔔 الإشعارات:</h2>
+      <ul class="list-disc list-inside">
+
+          {{ notifications }}
+
+      </ul>
+    </div>
   </template>
   
   <script setup lang="ts">
   import { useAuthStore } from '@/stores/useAuthStore'
-  
+  import { useNotificationsStore } from '@/stores/notifications';
+
+
+
+const notificationsStore = useNotificationsStore();
+const notifications=notificationsStore.notifications;
+
+
   const auth = useAuthStore()
   const user = auth.user
   const permissions = auth.permissions

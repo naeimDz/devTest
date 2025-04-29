@@ -8,6 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 import { createPinia } from 'pinia'
 import { useAuthStore } from '@/stores/useAuthStore'
 
+import EchoInit from './echo';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
 
 createInertiaApp({
@@ -19,6 +20,7 @@ createInertiaApp({
     const app = createApp({ render: () => h(App, props) })
 
     const pinia = createPinia()
+
     app.use(plugin).use(ZiggyVue).use(pinia)
 
     const authStore = useAuthStore()
@@ -26,6 +28,7 @@ createInertiaApp({
     const user = props.initialPage.props.auth?.user || null
     if (user) {
       authStore.setUser(user)
+      EchoInit(pinia, user);
     } else {
       authStore.clearUser()
     }

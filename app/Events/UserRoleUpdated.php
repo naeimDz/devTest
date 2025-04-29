@@ -17,7 +17,7 @@ class UserRoleUpdated
     public int $newRole;
     public int $userId;
 
-    public function __construct(int $newRole, int $userId)
+    public function __construct( int $userId,int $newRole)
     {
         $this->newRole = $newRole;
         $this->userId = $userId;
@@ -31,7 +31,14 @@ class UserRoleUpdated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('App.Models.User.' . $this->userId),
+        ];
+    }
+    
+    public function broadcastWith()
+    {
+        return [
+            'notification' => 'Your role has been updated to ' . $this->newRole, 
         ];
     }
 }

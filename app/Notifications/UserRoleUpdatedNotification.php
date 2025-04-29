@@ -37,7 +37,7 @@ class UserRoleUpdatedNotification extends Notification
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => "{$this->userName} has been assigned the role of {$this->newRole}.",
+            'message' => "{$this->userName} nameUsere has been assigned the role of ism role {$this->newRole}.",
             'user_name' => $this->userName,
             'new_role' => $this->newRole,
         ]);

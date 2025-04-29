@@ -17,6 +17,7 @@ class ShareAuthData
             $user = \App\Models\User::with('role.permissions')->find(Auth::id());
 
             return [
+
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,

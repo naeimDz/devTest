@@ -10,8 +10,9 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 const showingNavigationDropdown = ref(false);
 const page = usePage();
 const user = page.props.auth.user;
-
 const userRoles = computed(() => user?.role);
+
+
 </script>
 
 <template>
@@ -52,6 +53,7 @@ const userRoles = computed(() => user?.role);
                         </div>
                     </div>
 
+
                     <!-- User Profile Dropdown -->
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                         <div class="ms-3 relative">
@@ -78,6 +80,14 @@ const userRoles = computed(() => user?.role);
                                         </button>
                                     </span>
                                 </template>
+                                <template>
+  <div>
+    <div v-for="notification in notifications" :key="notification.id" class="notification">
+      <p>{{ notification.message }}</p>
+    </div>
+  </div>
+</template>
+
 
                                 <template #content>
                                     <DropdownLink :href="route('profile.edit')"> الملف الشخصي </DropdownLink>

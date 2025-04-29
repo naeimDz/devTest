@@ -57,7 +57,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
 
 });
-
+Route::get('/notifications-test', function () {
+    try {
+        event(new \App\Events\UserRoleUpdated(1, 22));
+    
+    }
+    catch (\Exception $e) {
+        return $e->getMessage();
+    }
+    
+});
 
 Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
