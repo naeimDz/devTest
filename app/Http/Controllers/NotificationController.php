@@ -29,4 +29,15 @@ class NotificationController extends Controller
             'unread_count' => $user->unreadNotifications->count(),
         ]);
     }
+    
+    public function show()
+    {
+        $user = Auth::user();
+        $notifications = $user->notifications()->orderBy('created_at', 'desc')->get();
+        
+        return response()->json([
+            'notifications' => $notifications
+        ]);
+    }
+
 }

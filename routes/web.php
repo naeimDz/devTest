@@ -55,16 +55,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/api/notifications', [App\Http\Controllers\NotificationsController::class, 'show'])->name('notifications.show');
 
 });
 Route::get('/notifications-test', function () {
     try {
-        event(new \App\Events\UserRoleUpdated(1, 22));
+        event(new \App\Events\UserRoleUpdated(24, 1));
     
     }
     catch (\Exception $e) {
         return $e->getMessage();
     }
+    return "Notification sent! ";
     
 });
 

@@ -1,7 +1,7 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { setActivePinia } from 'pinia';
-import { useNotificationsStore } from './stores/notifications';
+import { useNotificationsStore } from './stores/useNotifications';
 
 export default function EchoInit(pinia, user) {
     setActivePinia(pinia);

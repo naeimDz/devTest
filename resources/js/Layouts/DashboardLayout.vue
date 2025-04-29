@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { ref, computed, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -8,9 +8,15 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 const showingNavigationDropdown = ref(false);
-const page = usePage();
-const user = page.props.auth.user;
-const userRoles = computed(() => user?.role);
+
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useNotificationsStore } from '@/stores/useNotifications'
+const notificationsStore = useNotificationsStore();
+
+const notifications = computed(() => notificationsStore.getNotifications);
+
+const auth = useAuthStore()
+const user = auth.user
 
 
 </script>
@@ -33,19 +39,19 @@ const userRoles = computed(() => user?.role);
                             <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                 لوحة التحكم 
                             </NavLink>
-
+                            <NavLink :href="route('requests.index')" :active="route().current('requests.index')">
+                                    الطلبات
+                            </NavLink>
                             <!-- الخدمات و الطلبات للمستخدمين admin و service_provider -->
-                            <template v-if="userRoles.name === 'service_provider' || userRoles.name === 'admin'">
+                            <template v-if="user.role.name === 'service_provider' || user.role.name === 'admin'">
                                 <NavLink :href="route('services.admin')" :active="route().current('services.admin')">
                                     الخدمات
                                 </NavLink>
-                                <NavLink :href="route('requests.index')" :active="route().current('requests.index')">
-                                    الطلبات
-                                </NavLink>
+
                             </template>
 
                             <!-- رابط المستخدمين فقط للمشرفين admin -->
-                            <template v-if="userRoles.name === 'admin'">
+                            <template v-if="user.role.name === 'admin'">
                                 <NavLink :href="route('users.index')" :active="route().current('users.index')">
                                     المستخدمين
                                 </NavLink>
@@ -53,6 +59,16 @@ const userRoles = computed(() => user?.role);
                         </div>
                     </div>
 
+                    <!-- Notifications Link -->
+                    <div class="hidden sm:flex sm:items-center sm:ms-6 ml-4">
+                        <Link :href="route('notifications.index')" class="relative inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span class="ml-1">إشعارات</span>
+                            <span v-if="notifications.length > 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{ notifications.length }}</span>
+                        </Link>
+                    </div>
 
                     <!-- User Profile Dropdown -->
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -64,7 +80,7 @@ const userRoles = computed(() => user?.role);
                                             type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                         >
-                                            {{ userRoles.name }}
+                                            {{ user.role.name }}
                                             <svg
                                                 class="ms-2 -me-0.5 h-4 w-4"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -80,14 +96,6 @@ const userRoles = computed(() => user?.role);
                                         </button>
                                     </span>
                                 </template>
-                                <template>
-  <div>
-    <div v-for="notification in notifications" :key="notification.id" class="notification">
-      <p>{{ notification.message }}</p>
-    </div>
-  </div>
-</template>
-
 
                                 <template #content>
                                     <DropdownLink :href="route('profile.edit')"> الملف الشخصي </DropdownLink>
@@ -144,16 +152,20 @@ const userRoles = computed(() => user?.role);
                     <ResponsiveNavLink :href="route('requests.index')" :active="route().current('requests.index')">
                         الطلبات
                     </ResponsiveNavLink>
-                    <template v-if="userRoles === 'service_provider' || userRoles === 'admin'">
+                    <template v-if="user.role.name === 'service_provider' || user.role.name === 'admin'">
                         <ResponsiveNavLink :href="route('services.admin')" :active="route().current('services.admin')">
                             الخدمات
                         </ResponsiveNavLink>
                     </template>
-                    <template v-if="userRoles === 'admin'">
+                    <template v-if="user.role.name === 'admin'">
                         <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.index')">
                             المستخدمين
                         </ResponsiveNavLink>
                     </template>
+                    <ResponsiveNavLink :href="route('notifications.index')" :active="route().current('notifications.index')">
+                        إشعارات
+                        <span v-if="notifications.length > 0" class="inline-flex items-center justify-center ml-2 px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">{{ notifications.length }}</span>
+                    </ResponsiveNavLink>
                 </div>
 
                 <!-- Mobile User Options -->

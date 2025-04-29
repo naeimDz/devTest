@@ -1,4 +1,5 @@
 <script setup>
+import  DashboardLayout  from '@/Layouts/DashboardLayout.vue';
 defineProps({
   notifications: Array,
   unread_count: Number,
@@ -6,6 +7,10 @@ defineProps({
 </script>
 
 <template>
+      <DashboardLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">الإشعارات</h2>
+        </template>
   <div class="max-w-4xl mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6">
         الإشعارات
@@ -30,7 +35,8 @@ defineProps({
       <p class="text-gray-600 text-center">لا توجد إشعارات حاليا.</p>
     </div>
   </div>
+</DashboardLayout>
 </template>
 
-<style scoped>
-</style>
+
+
