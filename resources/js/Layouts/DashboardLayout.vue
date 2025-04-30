@@ -6,6 +6,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import ToastNotifications from '@/Components/ToastNotifications.vue';
+
 
 const showingNavigationDropdown = ref(false);
 
@@ -18,11 +20,22 @@ const notifications = computed(() => notificationsStore.getNotifications);
 const auth = useAuthStore()
 const user = auth.user
 
-
+// Just for testing - you can remove this later
+ onMounted(() => {
+   // Example of how to add notifications programmatically
+   notificationsStore.addNotification({
+     title: 'مرحباً بك',
+    message: 'تم تسجيل دخولك بنجاح',
+    type: 'success',
+    timestamp: new Date()
+   });
+ });
 </script>
 
 <template>
     <div class="min-h-screen bg-gray-100">
+        <ToastNotifications position="bottom-left" :timeout="5000" :maxToasts="5" />
+
         <nav class="bg-white border-b border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">

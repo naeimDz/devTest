@@ -22,7 +22,13 @@ export default function EchoInit(pinia, user) {
         .notification((notification) => {
 
             const notificationsStore = useNotificationsStore();
-            notificationsStore.addNotification(notification);
+            notificationsStore.addNotification({
+                id: Date.now().toString(),
+                title: notification.title || 'New Notification',
+                message: notification.message,
+                type: notification.type || 'info',
+                timestamp: new Date()
+              });;
         });
 
 

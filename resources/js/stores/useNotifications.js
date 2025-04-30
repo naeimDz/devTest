@@ -12,7 +12,16 @@ export const useNotificationsStore = defineStore('notifications', {
   },
   actions: {
     addNotification(notification) {
+      if (!notification.id) {
+        notification.id = Date.now().toString();
+      }
       this.notifications.push(notification);
+    },
+    removeNotification(id) {
+      const index = this.notifications.findIndex(n => n.id === id);
+      if (index !== -1) {
+        this.notifications.splice(index, 1);
+      }
     },
     clearNotifications() {
       this.notifications = [];
