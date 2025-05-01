@@ -21,15 +21,7 @@ const auth = useAuthStore()
 const user = auth.user
 
 // Just for testing - you can remove this later
- onMounted(() => {
-   // Example of how to add notifications programmatically
-   notificationsStore.addNotification({
-     title: 'مرحباً بك',
-    message: 'تم تسجيل دخولك بنجاح',
-    type: 'success',
-    timestamp: new Date()
-   });
- });
+
 </script>
 
 <template>

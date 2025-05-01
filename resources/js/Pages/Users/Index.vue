@@ -1,10 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-import TextInput from '@/Components/TextInput.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ChangeRoleModal from '@/Components/ChangeRoleModal.vue'; 
+import Pagination from '@/Components/Pagination.vue';
 
 
 const props = defineProps({
@@ -13,9 +12,6 @@ const props = defineProps({
     filters: Object
 });
 
-const search = ref(props.filters.search || '');
-const selectedRole = ref(props.filters.role || '');
-const selectedStatus = ref(props.filters.status || '');
 const showChangeRoleModal = ref(false);
 const selectedUser = ref(null);
 
@@ -31,11 +27,19 @@ function openChangeRoleModal(user) {
     showChangeRoleModal.value = true;
 }
 
-function resetFilters() {
-    search.value = '';
-    selectedRole.value = '';
-    selectedStatus.value = '';
-}
+const handlePageChange = (page) => {
+  router.get(route(route().current()), 
+    { 
+      ...route().params,
+      page: page 
+    }, 
+    { 
+      preserveState: true,
+      preserveScroll: true,
+      only: ['users']
+    }
+  );
+};
 </script>
 
 <template>
@@ -122,7 +126,10 @@ function resetFilters() {
                                 </tbody>
                             </table>
                         </div>
-
+                        <Pagination 
+                            :items="props.users" 
+                            @page-changed="handlePageChange" 
+                            />
                     </div>
                 </div>
             </div>

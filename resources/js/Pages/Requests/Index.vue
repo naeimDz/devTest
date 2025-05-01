@@ -1,15 +1,15 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { router,Head, Link} from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import { useAuthStore } from '@/stores/useAuthStore';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import Modal from '@/Components/Modal.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     requestServices: Object,
 });
-
 const auth = useAuthStore();
 const user = auth.user;
 
@@ -29,17 +29,11 @@ const statusOptions = [
     { value: 'cancelled', label: 'ملغي' },
 ];
 
-const isAdmin = () => {
-    return user?.role?.name === 'admin';
-};
-
 const isServiceProvider = () => {
     return user?.role?.name === 'service_provider';
 };
 
-const isRegularUser = () => {
-    return user?.role?.name === 'user';
-};
+
 
 const openUpdateModal = (request) => {
     selectedRequest.value = request;
@@ -88,6 +82,23 @@ const formatDate = (dateString) => {
         minute: '2-digit',
     }).format(date);
 };
+
+
+const handlePageChange = (page) => {
+  router.get(route(route().current()), 
+    { 
+      ...route().params,
+      page: page 
+    }, 
+    { 
+      preserveState: true,
+      preserveScroll: true,
+      only: ['requestServices']
+    }
+  );
+};
+
+
 </script>
 
 <template>
@@ -136,7 +147,7 @@ const formatDate = (dateString) => {
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="request in requestServices" :key="request.id">
+                                    <tr v-for="request in requestServices.data" :key="request.id">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             #{{ request.id }}
                                         </td>
@@ -176,7 +187,7 @@ const formatDate = (dateString) => {
                                     </tr>
                                     
                                     <!-- حالة الفراغ -->
-                                    <tr v-if="requestServices && requestServices.length === 0">
+                                    <tr v-if="requestServices && requestServices.data.length === 0">
                                         <td colspan="6" class="px-6 py-10 text-center text-gray-500">
                                             <div class="flex flex-col items-center justify-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,7 +201,10 @@ const formatDate = (dateString) => {
                                 </tbody>
                             </table>
                         </div>
-
+                        <Pagination 
+                            :items="props.requestServices" 
+                            @page-changed="handlePageChange" 
+                            />
                     </div>
                 </div>
             </div>

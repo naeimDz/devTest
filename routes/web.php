@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Notifications\goNotification;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,12 +56,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestServiceController::class, 'index'])->name('requests.index');
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/api/notifications', [App\Http\Controllers\NotificationsController::class, 'show'])->name('notifications.show');
-
 });
 Route::get('/notifications-test', function () {
     try {
-        event(new \App\Events\UserRoleUpdated(24, 1));
+        event(new \App\Events\UserRoleUpdated(22, 1));
     
     }
     catch (\Exception $e) {
@@ -70,28 +69,22 @@ Route::get('/notifications-test', function () {
     
 });
 
+Route::get('/notifications/test', function () {
+    $user = \App\Models\User::find(22);
+    $user->notify(new \App\Notifications\goNotification());
+
+    return "Notification sent!";
+});
+
 Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
     Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
 
-Route::middleware([CheckRole::class . ':admin'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::put('/users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-    Route::put('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
-});
 
 
-Route::middleware([CheckRole::class . ':service_provider'])->group(function () {
-    Route::put('/requests/{requestService}', [RequestServiceController::class, 'update'])->name('requests.update-status');
-    Route::get('/services/show/{id}', [ServiceController::class, 'show'])->name('services.show');
-    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
 
-    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
-
-
-});
 
 Route::middleware([CheckRole::class . ':user'])->group(function () {
     Route::post('/service/{serviceId}', [RequestServiceController::class, 'storeForAuthenticatedUser'])->name('request.explore');
@@ -100,3 +93,5 @@ Route::middleware([CheckRole::class . ':user'])->group(function () {
 
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
+require __DIR__.'/service_provider.php';

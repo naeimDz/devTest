@@ -27,8 +27,8 @@ class RequestServiceController extends Controller
         
         $requestServices = $query->orderBy('created_at', 'desc')
         ->with(['service', 'user'])
-        ->get()
-        ->map(function ($request) {
+        ->paginate(6) 
+        ->through(function ($request) {
             return [
                 'id' => $request->id,
                 'email' => $request->email,
@@ -44,7 +44,6 @@ class RequestServiceController extends Controller
                 ] : null,
             ];
         });
-
 
         return Inertia::render('Requests/Index', [
             'requestServices' => $requestServices,

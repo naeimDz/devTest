@@ -4,6 +4,7 @@ import {  router, useForm } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import { useAuthStore } from '@/stores/useAuthStore';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     services: Object,
@@ -114,6 +115,20 @@ const statusText = (service) => {
     if (service.status === 'active') return 'مفعلة';
     return 'غير مفعلة';
 };
+
+const handlePageChange = (page) => {
+  router.get(route(route().current()), 
+    { 
+      ...route().params,
+      page: page 
+    }, 
+    { 
+      preserveState: true,
+      preserveScroll: true,
+      only: ['services']
+    }
+  );
+};
 </script>
 
 <template>
@@ -121,7 +136,7 @@ const statusText = (service) => {
         <div class="flex justify-between items-center py-6 px-4 sm:px-6 lg:px-8 bg-white shadow">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">إدارة الخدمات</h2>
             <button
-                v-if="isAdmin || isServiceProvider"
+                v-if=" isServiceProvider"
                 @click="openCreateModal"
                 class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center"
             >
@@ -236,6 +251,10 @@ const statusText = (service) => {
                     </div>
                 </div>
             </div>
+            <Pagination 
+                            :items="props.services" 
+                            @page-changed="handlePageChange" 
+                            />
         </div>
 
         <!--إنشاء خدمة جديدة -->
