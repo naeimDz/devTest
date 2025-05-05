@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Role;
 use App\Events\UserRoleUpdated;
 
+
 class UserController extends Controller
 {
     public function index()
@@ -43,6 +44,7 @@ class UserController extends Controller
     
     $user->role_id = $validated['role_id'];
     $user->save();
+    
     event(new UserRoleUpdated($user->id, $validated['role_id']));
     
     return back()->with('message', 'تم تحديث دور المستخدم بنجاح');

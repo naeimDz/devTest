@@ -20,7 +20,7 @@ const notifications = computed(() => notificationsStore.getNotifications);
 const auth = useAuthStore()
 const user = auth.user
 
-// Just for testing - you can remove this later
+
 
 </script>
 
