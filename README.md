@@ -1,66 +1,121 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛠️ Service Platform – Educational Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based full-stack educational platform simulating a **services marketplace** between providers and clients. It includes a built-in **admin dashboard**, **authentication and role management**, **real-time notifications**, and support for both **Inertia.js frontend** and **external SPA frontend via REST API**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🔥 Project Highlights
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- ✅ Full **authentication** system using Laravel Breeze (Inertia) and Sanctum (for SPA)
+- ✅ **Role-based access**: `admin`, `provider`, `client`
+- ✅ Dual backend support:
+  - Inertia-based (Laravel + Vue 3) included
+  - SPA (Vue 3) via REST API supported (frontend not included)
+- ✅ Real-time **WebSockets** with Laravel Echo using `laravel-websockets` (self-hosted)
+- ✅ Dynamic **notifications system** (broadcast + database)
+- ✅ Admin moderation panel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🧩 Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Layer       | Technology                           |
+|------------|---------------------------------------|
+| Backend     | Laravel 11, Sanctum                  |
+| Frontend #1 | Vue 3 + Inertia.js (included)        |
+| Frontend #2 | Vue 3 SPA via REST API (external)    |
+| DB          | sqlite                           |
+| Real-time   | Laravel Echo + laravel-websockets    |
+| Auth        | Session-based (Inertia), Token-based (SPA) |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🔐 Roles & Access
 
-## Laravel Sponsors
+| Role     | Access Rights                                  |
+|----------|------------------------------------------------|
+| Admin    | Manage all users, services, and requests       |
+| Provider | Manage own services and requests               |
+| Client   | View services and submit service requests      |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Access control implemented via:
+- `CheckRole` middleware
+- Laravel Gate & Policy (selective use)
+- Auth guards with Sanctum (SPA)
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 📦 Features by Module
 
-## Contributing
+### 👤 Authentication
+- Register / login with validation
+- Inertia frontend: session-based
+- SPA support: token-based (Sanctum)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🛍️ Services
+- Providers can create, update, and delete services
+- Public service listings
+- Basic validation and error handling
 
-## Code of Conduct
+### 📩 Requests
+- Clients can request a service
+- Providers manage requests for their own services
+- Request statuses: pending, accepted, rejected, done
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🛡️ Admin
+- Block / unblock users
+- View all services and requests
+- Dashboard with stats (optional)
 
-## Security Vulnerabilities
+### 🔔 Notifications
+- Realtime + database notifications for providers on new requests
+- Toast Vue component for live feedback
+- Private broadcast channels: `user.{id}`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ⚡ Events & Listeners
+- Laravel **Events** triggered on key actions (e.g. request created)
+- **Listeners** handle:
+  - Broadcasting
+  - Triggering notifications
+  - Logging or internal logic
+- Fully integrated with Laravel's notification system
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔄 Real-time Features
+
+Built using **Laravel Echo + laravel-websockets**, providers receive:
+- Live notifications for incoming service requests
+- Real-time UI updates in SPA (when connected)
+
+---
+
+## 🧪 Educational Purpose
+
+This is a **demo-grade learning project** meant for educational use only. Ideal for:
+- Practicing Laravel + Vue full-stack development
+- Implementing role-based architecture
+- Learning real-time broadcasting and API/SPA support
+
+---
+
+
+📎 Notes
+This repo does not include the Vue SPA frontend; it only supports it via REST API.
+
+The included frontend uses Inertia.js (tight Laravel-Vue integration).
+
+For real-time features, ensure laravel-websockets is running and configured correctly.
+
+
+---
+
+## 📷 Preview
+
+Below are some screenshots showcasing various parts of the platform:
+
+| ![Preview 1](public/screenshots/image1.png) | ![Preview 2](public/screenshots/image2.png) |
+|----------------------------------|----------------------------------|
+| ![Preview 3](public/screenshots/image3.png) | ![Preview 4](public/screenshots/image4.png) |
+| ![Preview 5](public/screenshots/image5.png) | ![Preview 6](public/screenshots/image6.png) |
+| ![Preview 6](public/screenshots/image7.png) |

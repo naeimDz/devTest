@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/requests/{id}', [RequestServiceController::class, 'show'])->name('requests.show');
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
 });
+
 Route::get('/notifications-test', function () {
     try {
         event(new \App\Events\UserRoleUpdated(22, 1));
@@ -69,12 +70,7 @@ Route::get('/notifications-test', function () {
     
 });
 
-Route::get('/notifications/test', function () {
-    $user = \App\Models\User::find(22);
-    $user->notify(new \App\Notifications\goNotification());
 
-    return "Notification sent!";
-});
 
 Route::middleware([CheckRole::class . ':admin,service_provider'])->group(function () {
     Route::get('/services', [ServiceController::class, 'indexAdmin'])->name('services.admin');
