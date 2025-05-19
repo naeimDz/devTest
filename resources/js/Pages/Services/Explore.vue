@@ -1,4 +1,6 @@
 <template>
+  <AuthenticatedLayout>
+
     <div class="services-explore">
       <div class="bg-gray-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,14 +73,19 @@
         @close="closeRequestModal"
       />
     </div>
+  </AuthenticatedLayout>
+
   </template>
   
   <script setup>
   import { ref, computed } from "vue";
+  import { useAuthStore } from '@/stores/useAuthStore'
   import { usePage } from "@inertiajs/vue3";
   import ServiceCard from "../../Components/ServiceCard.vue";
   import RequestServiceModal from "../../Components/RequestServiceModal.vue";
-  
+  import AuthenticatedLayout from '../../Layouts/DashboardLayout.vue';
+
+  const authStore = useAuthStore()
   const page = usePage();
   const services = ref(page.props.services);
   const searchQuery = ref("");

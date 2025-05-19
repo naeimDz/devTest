@@ -10,6 +10,8 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Notifications\goNotification;
 use App\Http\Controllers\NotificationController;
+use App\Models\Service;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +25,8 @@ use App\Http\Controllers\NotificationController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+    return Inertia::render('Services/Explore', [
+        'services' => Service::with('user')->get(),
     ]);
 });
 Route::post('/services/{serviceId}', [RequestServiceController::class, 'storeForGuest'])->name('services.explore');

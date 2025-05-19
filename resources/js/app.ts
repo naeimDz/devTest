@@ -23,7 +23,7 @@ createInertiaApp({
 
     app.use(plugin).use(ZiggyVue).use(pinia)
 
-    const authStore = useAuthStore()
+    const authStore = useAuthStore(pinia)
 
     const user = props.initialPage.props.auth?.user || null
     if (user) {

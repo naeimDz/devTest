@@ -18,5 +18,5 @@
 </template>
 
 <script setup lang="ts">
-import AppLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AppLayout from '../../Layouts/DashboardLayout.vue';
 </script>

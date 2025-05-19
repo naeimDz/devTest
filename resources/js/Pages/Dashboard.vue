@@ -1,31 +1,47 @@
 <script setup>
-import { ref,  watch,computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/DashboardLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useNotificationsStore } from '@/stores/useNotifications';
 
+// الحصول على بيانات الصفحة من Inertia
+const page = usePage();
+
 const auth = useAuthStore();
-const user = auth.user;
-const permissions = ref([]);
 const notificationsStore = useNotificationsStore();
 
-const notifications = computed(() => notificationsStore.getNotifications);
+// تأكد من تحديث بيانات المستخدم من بيانات Inertia
+onMounted(() => {
+  // تحديث متجر المستخدم إذا كانت البيانات متوفرة في الصفحة
+  if (page.props.auth && page.props.auth.user) {
+    auth.setUser(page.props.auth.user);
+  }
+  
+  // تحديث الإشعارات إذا كانت متوفرة في الصفحة
+  if (page.props.notifications) {
+    notificationsStore.setNotifications(page.props.notifications);
+  }
+  
+  // يمكنك هنا إضافة أي طلبات API إضافية للحصول على بيانات أخرى
+  // مثل استدعاء notificationsStore.fetchNotifications() إذا كانت هناك دالة لجلب الإشعارات
+});
 
-watch(() => auth.user, (newUser) => {
-  if (newUser && newUser.role?.permissions) {
-    permissions.value = newUser.role.permissions;
+// نراقب تغيير بيانات الصفحة لتحديث المتاجر
+watch(() => page.props.auth?.user, (newUser) => {
+  if (newUser) {
+    auth.setUser(newUser);
   }
 }, { immediate: true });
 
-// Helper functions for role and permissions checking
-const hasPermission = (permissionName) => {
-  return permissions.value.some(p => p.name.toLowerCase() === permissionName.toLowerCase());
-};
-const hasRole = (roleName) => {
-  return user.role.name.toLowerCase() === roleName.toLowerCase();
-};
+// computed properties للوصول للبيانات
+const user = computed(() => auth.user);
+const permissions = computed(() => auth.permissions);
+const notifications = computed(() => notificationsStore.getNotifications);
 
+// دوال مساعدة
+const hasPermission = auth.hasPermission;
+const hasRole = auth.hasRole;
 </script>
 
 <template>
@@ -37,33 +53,14 @@ const hasRole = (roleName) => {
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <!-- Welcome section -->
           <div class="p-6">
-            <h1 class="text-2xl font-bold mb-4">مرحبا {{ user?.name }}</h1>
+            <h1 class="text-2xl font-bold mb-4" v-if="user">مرحبا {{ user.name }}</h1>
+            <h1 class="text-2xl font-bold mb-4" v-else>جاري تحميل البيانات...</h1>
 
-            <div class="mb-6">
-              <p class="text-gray-700">📛 الإيميل: {{ user?.email }}</p>
-              <p class="text-gray-700">🧩 الدور: {{ user?.role.name }}</p>
+            <div class="mb-6" v-if="user">
+              <p class="text-gray-700">📛 الإيميل: {{ user.email }}</p>
+              <p class="text-gray-700">🧩 الدور: {{ user.role.name }}</p>
             </div>
             
-            <!-- Stats Cards
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div class="bg-blue-50 p-4 rounded-lg shadow">
-                <h3 class="text-lg font-medium text-blue-800 mb-2">الطلبات النشطة</h3>
-                <p class="text-3xl font-bold text-blue-600">{{loading ? '...' : '5'}}</p>
-              </div>
-              
-              <div class="bg-green-50 p-4 rounded-lg shadow">
-                <h3 class="text-lg font-medium text-green-800 mb-2">الخدمات المتاحة</h3>
-                <p class="text-3xl font-bold text-green-600">{{loading ? '...' : '12'}}</p>
-              </div>
-              
-              <div class="bg-purple-50 p-4 rounded-lg shadow">
-                <h3 class="text-lg font-medium text-purple-800 mb-2">الإشعارات الجديدة</h3>
-                <p class="text-3xl font-bold text-purple-600">
-                  {{ notifications.length }}
-                </p>
-              </div>
-            </div>
-              -->
             <!-- Permissions section -->
             <div class="mb-6">
               <h2 class="text-xl font-semibold mb-2">🛡 الصلاحيات:</h2>
@@ -86,30 +83,6 @@ const hasRole = (roleName) => {
               <p v-else class="text-gray-600 mt-2">👤 مستخدم عادي</p>
             </div>
             
-            <!-- Quick Actions 
-            <div class="border-t pt-4 mt-4" v-if="hasRole('admin') || hasRole('service_provider')">
-              <h2 class="text-lg font-medium mb-3">⚡ الإجراءات السريعة:</h2>
-              
-              <div class="flex flex-wrap gap-3">
-                <button @click="showCreateModal = true" v-if="hasPermission('create services')"
-                        class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center">
-                  <span class="ml-2">➕</span>
-                  <span>إنشاء خدمة جديدة</span>
-                </button>
-
-                <button class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg flex items-center">
-                  <span class="ml-2">📋</span>
-                  <span>عرض الطلبات الجديدة</span>
-                </button>
-
-                <button v-if="hasRole('admin')" 
-                        class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg flex items-center">
-                  <span class="ml-2">👥</span>
-                  <span>إدارة المستخدمين</span>
-                </button>
-              </div>
-            </div>
-            -->
             <!-- Notifications section -->
             <div class="border-t pt-4 mt-4">
               <h2 class="text-lg font-medium mb-2">🔔 الإشعارات:</h2>
