@@ -22,10 +22,14 @@ createInertiaApp({
     const pinia = createPinia()
 
     app.use(plugin).use(ZiggyVue).use(pinia)
+    
+    
+    app.mount(el)
 
-    const authStore = useAuthStore(pinia)
-
+    const authStore = useAuthStore()
     const user = props.initialPage.props.auth?.user || null
+
+
     if (user) {
       authStore.setUser(user)
       EchoInit(pinia, user);
@@ -33,7 +37,7 @@ createInertiaApp({
       authStore.clearUser()
     }
 
-    app.mount(el)
+   // app.mount(el)
   },
 
   progress: {

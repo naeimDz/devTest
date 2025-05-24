@@ -51,8 +51,8 @@ const hasRole = (role) => {
             <!-- Role verification section -->
             <div class="border-t pt-4 mt-4">
               <h2 class="text-lg font-medium mb-2">🔐 التحقق:</h2>
-              <p v-if="hasPermission('create services')" class="text-green-600">✔ عندك صلاحية إنشاء خدمة</p>
-              <p v-else class="text-red-600">⛔ ماعندكش صلاحية إنشاء خدمة</p>
+              <p v-if="hasPermission('create services')" class="text-green-600">✔ صلاحية إنشاء خدمة</p>
+              <p v-else class="text-red-600">⛔ صلاحية إنشاء خدمة</p>
             
               <p v-if="hasRole('admin')" class="text-green-600 mt-2">✔ أنت مدير</p>
               <p v-else-if="hasRole('service_provider')" class="text-blue-600 mt-2">👨‍💼 أنت مزود خدمة</p>

@@ -10,7 +10,8 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRoleUpdated
+
+class UserRoleUpdated  implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -42,6 +43,10 @@ class UserRoleUpdated
             'new_role' => $this->newRole,
             'notification' => 'Your role has been updated to ' . $this->newRole, 
         ];
+    }
+      public function broadcastAs()
+    {
+        return 'UserRoleUpdatedEvent';
     }
     
 }

@@ -30,11 +30,13 @@ export default function EchoInit(pinia, user) {
                 type: notification.type || 'info',
                 timestamp: new Date()
               });
-        })
-        .listen('UserRoleUpdatedEvent', (event) => { 
-            const authStore = useAuthStore();
-            authStore.setUser(event.user); 
-        });
+              console.log('Notification received:', notification);
+        }).listen('UserRoleUpdatedEvent', (event) => { 
+    console.log('Received role update event:', event); // للتأكد من البيانات
+    const authStore = useAuthStore();
+    authStore.setUser(event.user); 
+    console.log('Store updated with:', authStore.user); // للتأكد من التحديث
+});
 
 
 }

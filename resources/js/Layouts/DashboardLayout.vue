@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
@@ -7,23 +7,35 @@ import DropdownLink from '@/Components/DropdownLink.vue'
 import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import ToastNotifications from '@/Components/ToastNotifications.vue'
-import { usePage } from '@inertiajs/vue3';
-import { useNotificationsStore } from '@/stores/useNotifications'
-const page = usePage();
-const user = computed(() => page.props.auth?.user);
+import { usePage } from '@inertiajs/vue3'
+import { useNotificationsStore } from '../stores/useNotifications'
+import { useAuthStore } from '../stores/useAuthStore'
 
-const hasRole = (role) => {
-  return user.value?.role?.name === role;
-};
+const page = usePage()
+const authStore = useAuthStore()
+const notificationsStore = useNotificationsStore()
+
+
+onMounted(() => {
+
+  if (page.props.auth?.user && !authStore.user) {
+    authStore.setUser(page.props.auth.user)
+  }
+})
+
+
+const user = computed(() => authStore.user)
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const isAdmin = computed(() => authStore.hasRole('admin'))
+const isProvider = computed(() => authStore.hasRole('service_provider'))
+
+
+watch(() => authStore.user?.role?.name, (newRole, oldRole) => {
+  console.log('Role changed from', oldRole, 'to', newRole)
+}, { deep: true })
 
 const showingNavigationDropdown = ref(false)
-const notificationsStore = useNotificationsStore()
 const notifications = computed(() => notificationsStore.getNotifications)
-
-const isAdmin = computed(() => hasRole('admin'))
-const isProvider = computed(() => hasRole('service_provider'))
-
-
 </script>
 
 <template>
@@ -43,7 +55,7 @@ const isProvider = computed(() => hasRole('service_provider'))
         </div>
 
         <!-- Navigation Links -->
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" v-if="user">
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" v-if="isAuthenticated">
           <NavLink :href="route('dashboard')" :active="route().current('dashboard')">لوحة التحكم</NavLink>
           <NavLink :href="route('requests.index')" :active="route().current('requests.index')">الطلبات</NavLink>
 
@@ -60,7 +72,7 @@ const isProvider = computed(() => hasRole('service_provider'))
       <!-- Right Side: Conditional -->
       <div class="hidden sm:flex sm:items-center sm:ms-6 ml-4">
         <!-- Notifications (only if logged in) -->
-        <template v-if="user">
+        <template v-if="isAuthenticated">
           <Link :href="route('notifications.index')" class="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 transition">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,14 +87,14 @@ const isProvider = computed(() => hasRole('service_provider'))
         </template>
 
         <!-- Authenticated: User Dropdown -->
-        <template v-if="user">
+        <template v-if="isAuthenticated">
           <div class="ms-3 relative">
             <Dropdown align="right" width="48">
               <template #trigger>
                 <span class="inline-flex rounded-md">
                   <button type="button"
                     class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 transition">
-                    {{ user.role?.name ?? '...' }}
+                    {{ authStore.roleName ?? '...' }}
                     <svg class="ms-2 -me-0.5 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd"
                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -126,7 +138,7 @@ const isProvider = computed(() => hasRole('service_provider'))
 
   <!-- Mobile Navigation -->
   <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
-    <div class="pt-2 pb-3 space-y-1" v-if="user">
+    <div class="pt-2 pb-3 space-y-1" v-if="isAuthenticated">
       <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">لوحة التحكم</ResponsiveNavLink>
       <ResponsiveNavLink :href="route('requests.index')" :active="route().current('requests.index')">الطلبات</ResponsiveNavLink>
 
@@ -154,10 +166,10 @@ const isProvider = computed(() => hasRole('service_provider'))
     </div>
 
     <!-- Mobile User Info -->
-    <div class="pt-4 pb-1 border-t border-gray-200" v-if="user">
+    <div class="pt-4 pb-1 border-t border-gray-200" v-if="isAuthenticated">
       <div class="px-4">
-        <div class="font-medium text-base text-gray-800">{{ user.name ?? '...' }}</div>
-        <div class="font-medium text-sm text-gray-500">{{ user.email ?? '...' }}</div>
+        <div class="font-medium text-base text-gray-800">{{ user?.name ?? '...' }}</div>
+        <div class="font-medium text-sm text-gray-500">{{ user?.email ?? '...' }}</div>
       </div>
       <div class="mt-3 space-y-1">
         <ResponsiveNavLink :href="route('profile.edit')">الملف الشخصي</ResponsiveNavLink>
