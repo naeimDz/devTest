@@ -45,15 +45,11 @@
     },
     setup(props) {
       const notificationsStore = useNotificationsStore();
-      const { notifications } = storeToRefs(notificationsStore);
-  
-      // Laravel Echo configuration for handling broadcasted notifications
-  
+      const { notifications } = storeToRefs(notificationsStore);  
   
       const addNotification = (notification) => {
         notificationsStore.addNotification(notification);
         
-        // Auto-remove notification after duration
         if (props.duration > 0) {
           setTimeout(() => {
             removeNotification(notification.id);

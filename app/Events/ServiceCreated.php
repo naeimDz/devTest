@@ -31,7 +31,7 @@ class ServiceCreated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $this->userId),
+            new PrivateChannel('admin.' . $this->userId),
         ];
     }
     public function broadcastWith(): array

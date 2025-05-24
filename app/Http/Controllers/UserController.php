@@ -45,8 +45,9 @@ class UserController extends Controller
     $user->role_id = $validated['role_id'];
     $user->save();
     
-    event(new UserRoleUpdated($user->id, $validated['role_id']));
-    
+    //event(new UserRoleUpdated($user->id, $validated['role_id']));
+    broadcast(new UserRoleUpdated($user->id, $validated['role_id']));
+
     return back()->with('message', 'تم تحديث دور المستخدم بنجاح');
     }
 }
