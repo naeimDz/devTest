@@ -1,27 +1,29 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import ToastNotifications from '@/Components/ToastNotifications.vue'
-
-import { useAuthStore } from '@/stores/useAuthStore'
+import { usePage } from '@inertiajs/vue3';
 import { useNotificationsStore } from '@/stores/useNotifications'
+const page = usePage();
+const user = computed(() => page.props.auth?.user);
+
+const hasRole = (role) => {
+  return user.value?.role?.name === role;
+};
 
 const showingNavigationDropdown = ref(false)
-
-const auth = useAuthStore()
 const notificationsStore = useNotificationsStore()
-
 const notifications = computed(() => notificationsStore.getNotifications)
-const user = computed(() => auth.user)
 
-const isAdmin = computed(() => auth.hasRole('admin'))
-const isProvider = computed(() => auth.hasRole('service_provider'))
+const isAdmin = computed(() => hasRole('admin'))
+const isProvider = computed(() => hasRole('service_provider'))
+
+
 </script>
 
 <template>

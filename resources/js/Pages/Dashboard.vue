@@ -1,47 +1,24 @@
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/DashboardLayout.vue';
 import { Head, usePage } from '@inertiajs/vue3';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { useNotificationsStore } from '@/stores/useNotifications';
 
-// الحصول على بيانات الصفحة من Inertia
 const page = usePage();
-
-const auth = useAuthStore();
 const notificationsStore = useNotificationsStore();
 
-// تأكد من تحديث بيانات المستخدم من بيانات Inertia
-onMounted(() => {
-  // تحديث متجر المستخدم إذا كانت البيانات متوفرة في الصفحة
-  if (page.props.auth && page.props.auth.user) {
-    auth.setUser(page.props.auth.user);
-  }
-  
-  // تحديث الإشعارات إذا كانت متوفرة في الصفحة
-  if (page.props.notifications) {
-    notificationsStore.setNotifications(page.props.notifications);
-  }
-  
-  // يمكنك هنا إضافة أي طلبات API إضافية للحصول على بيانات أخرى
-  // مثل استدعاء notificationsStore.fetchNotifications() إذا كانت هناك دالة لجلب الإشعارات
-});
+const user = computed(() => page.props.auth?.user);
+const permissions = computed(() => user.value?.role?.permissions || []);
+const notifications = computed(() => notificationsStore.getNotifications || []);
 
-// نراقب تغيير بيانات الصفحة لتحديث المتاجر
-watch(() => page.props.auth?.user, (newUser) => {
-  if (newUser) {
-    auth.setUser(newUser);
-  }
-}, { immediate: true });
+// استخدام الدوال المساعدة للتحقق من الأدوار والصلاحيات
+const hasPermission = (permission) => {
+  return permissions.value.some(p => p.name === permission);
+};
 
-// computed properties للوصول للبيانات
-const user = computed(() => auth.user);
-const permissions = computed(() => auth.permissions);
-const notifications = computed(() => notificationsStore.getNotifications);
-
-// دوال مساعدة
-const hasPermission = auth.hasPermission;
-const hasRole = auth.hasRole;
+const hasRole = (role) => {
+  return user.value?.role?.name === role;
+};
 </script>
 
 <template>
@@ -53,12 +30,11 @@ const hasRole = auth.hasRole;
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <!-- Welcome section -->
           <div class="p-6">
-            <h1 class="text-2xl font-bold mb-4" v-if="user">مرحبا {{ user.name }}</h1>
-            <h1 class="text-2xl font-bold mb-4" v-else>جاري تحميل البيانات...</h1>
+            <h1 class="text-2xl font-bold mb-4">مرحبا {{ user?.name }}</h1>
 
-            <div class="mb-6" v-if="user">
-              <p class="text-gray-700">📛 الإيميل: {{ user.email }}</p>
-              <p class="text-gray-700">🧩 الدور: {{ user.role.name }}</p>
+            <div class="mb-6">
+              <p class="text-gray-700">📛 الإيميل: {{ user?.email }}</p>
+              <p class="text-gray-700">🧩 الدور: {{ user?.role.name }}</p>
             </div>
             
             <!-- Permissions section -->

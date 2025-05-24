@@ -2,6 +2,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { setActivePinia } from 'pinia';
 import { useNotificationsStore } from './stores/useNotifications';
+import { useAuthStore } from './stores/useAuthStore';
 
 export default function EchoInit(pinia, user) {
     setActivePinia(pinia);
@@ -28,7 +29,11 @@ export default function EchoInit(pinia, user) {
                 message: notification.message,
                 type: notification.type || 'info',
                 timestamp: new Date()
-              });;
+              });
+        })
+        .listen('UserRoleUpdatedEvent', (event) => { 
+            const authStore = useAuthStore();
+            authStore.setUser(event.user); 
         });
 
 
