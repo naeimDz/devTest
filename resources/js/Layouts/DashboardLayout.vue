@@ -10,12 +10,22 @@ import ToastNotifications from '@/Components/ToastNotifications.vue'
 import { usePage } from '@inertiajs/vue3'
 import { useNotificationsStore } from '../stores/useNotifications'
 import { useAuthStore } from '../stores/useAuthStore'
+import { router } from '@inertiajs/vue3'
 
 const page = usePage()
 const authStore = useAuthStore()
 const notificationsStore = useNotificationsStore()
 
-
+function handleLogout() {
+  router.post(route('logout'), {}, {
+    onSuccess: () => {
+      authStore.clearUser()
+    },
+    onFinish: () => {
+      authStore.clearUser()
+    }
+  })
+}
 onMounted(() => {
 
   if (page.props.auth?.user && !authStore.user) {
@@ -106,7 +116,8 @@ const notifications = computed(() => notificationsStore.getNotifications)
 
               <template #content>
                 <DropdownLink :href="route('profile.edit')">الملف الشخصي</DropdownLink>
-                <DropdownLink :href="route('logout')" method="post" as="button">تسجيل الخروج</DropdownLink>
+  <button @click="handleLogout" class="w-full text-left px-4 py-2 hover:bg-gray-100">تسجيل الخروج</button>
+
               </template>
             </Dropdown>
           </div>
